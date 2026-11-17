@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Dashboard')}"></head>
+<body class="dashboard-page dashboard-home">
+<div class="dashboard-shell">
+	<div class="dashboard-scrim" data-dashboard-scrim></div>
+	<aside class="dashboard-sidebar" id="dashboard-navigation" aria-label="Admin navigation">
+		<div class="dashboard-sidebar-top">
+			<a class="dashboard-brand" th:href="@{/}" aria-label="Divine Laundry dashboard"><span class="dashboard-brand-mark" aria-hidden="true">D</span><span><strong>Divine Laundry</strong><small>Admin workspace</small></span></a>
+			<button class="dashboard-close" type="button" data-dashboard-close aria-label="Close navigation">&times;</button>
+		</div>
+		<nav class="dashboard-nav" aria-label="Main navigation">
+			<p class="dashboard-nav-label">WORKSPACE</p>
+			<a class="is-active" th:href="@{/}" aria-current="page"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 13h6V4H4zM14 20h6v-9h-6zM4 20h6v-3H4zM14 7h6V4h-6z"></path></svg><span>Dashboard</span></a>
+			<a th:href="@{/orders}"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 3h12v18H6zM9 7h6M9 11h6M9 15h4"></path></svg><span>Orders</span></a>
+			<a th:href="@{/orders/new}"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg><span>New order</span></a>
+			<a th:href="@{/customers}"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"></circle><path d="M3.5 19a5.5 5.5 0 0 1 11 0M16 6.5a3 3 0 0 1 0 5.8M16 15a5 5 0 0 1 4.5 4"></path></svg><span>Customers</span></a>
+			<p class="dashboard-nav-label dashboard-nav-label-spaced">MANAGE</p>
+			<a th:href="@{/services}"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 5h16v14H4zM8 9h8M8 13h5"></path></svg><span>Services &amp; pricing</span></a><a th:href="@{/reports}"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 19V9M12 19V5M19 19v-7M3 19h18"></path></svg><span>Reports</span></a>
+		</nav>
+		<div class="dashboard-sidebar-footer"><div class="dashboard-user"><span class="dashboard-user-mark" aria-hidden="true">A</span><span><strong>Admin account</strong><small>Private workspace</small></span></div><form th:action="@{/logout}" method="post"><button class="dashboard-logout" type="submit"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M10 5H5v14h5M14 8l4 4-4 4M9 12h9"></path></svg><span>Sign out</span></button></form></div>
+	</aside>
+	<div class="dashboard-main">
+		<header class="dashboard-topbar"><div class="dashboard-topbar-start"><button class="dashboard-menu" type="button" data-dashboard-menu aria-controls="dashboard-navigation" aria-expanded="false" aria-label="Open navigation"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button><div><p class="dashboard-breadcrumb">DIVINE LAUNDRY <span>/</span></p><h1>Dashboard</h1></div></div><div class="dashboard-topbar-meta"><span class="dashboard-status-dot" aria-hidden="true"></span><span>Operations live</span></div></header>
+		<main class="dashboard-content">
+			<header class="dh-head">
+				<div>
+					<h2>Today's operations</h2>
+					<p class="dh-date" th:text="|${#temporals.format(businessDate, 'dd MMM yyyy')} · ${#temporals.format(businessDate, 'EEEE')}|">25 Sep 2026 · Friday</p>
+					<p class="dh-sub">Orders, collections and delivery workload at a glance.</p>
+				</div>
+				<a class="dh-cta" th:href="@{/orders/new}"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg><span>Create new order</span></a>
+			</header>
+
+			<section class="dh-kpis" aria-label="Business overview">
+				<article class="dashboard-kpi kpi-neutral dh-kpi"><div class="dh-kpi-top"><p>Today's orders</p><span class="dh-kpi-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 4h12v16H6zM9 8h6M9 12h6M9 16h3"></path></svg></span></div><strong th:text="${dashboard.todayOrders}">0</strong></article>
+				<article class="dashboard-kpi kpi-warning dh-kpi is-warn"><div class="dh-kpi-top"><p>In process</p><span class="dh-kpi-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M7 7h10M7 17h10M4 4h16v16H4z"></path></svg></span></div><strong th:text="${dashboard.pendingOrders}">0</strong></article>
+				<article class="dashboard-kpi kpi-success dh-kpi is-ok"><div class="dh-kpi-top"><p>Ready for delivery</p><span class="dh-kpi-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"></circle><path d="m8 12 3 3 5-6"></path></svg></span></div><strong th:text="${dashboard.readyOrders}">0</strong></article>
+				<article class="dashboard-kpi kpi-danger dh-kpi is-alert"><div class="dh-kpi-top"><p>Outstanding</p><span class="dh-kpi-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16v12H4zM7 7V5h10v2M8 12h8"></path></svg></span></div><strong th:text="|₹${#numbers.formatDecimal(dashboard.outstanding, 0, 0)}|">₹0</strong></article>
+				<article class="dashboard-kpi kpi-success dh-kpi is-ok"><div class="dh-kpi-top"><p>Collected today</p><span class="dh-kpi-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 6h16v12H4zM4 10h16M8 15h3"></path></svg></span></div><strong th:text="|₹${#numbers.formatDecimal(dashboard.todayCollections, 0, 0)}|">₹0</strong></article>
+				<article class="dashboard-kpi kpi-neutral dh-kpi"><div class="dh-kpi-top"><p>Total customers</p><span class="dh-kpi-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"></circle><path d="M3.5 19a5.5 5.5 0 0 1 11 0M16 6.5a3 3 0 0 1 0 5.8M16 15a5 5 0 0 1 4.5 4"></path></svg></span></div><strong th:text="${customerCount}">0</strong></article>
+			</section>
+
+			<section class="dh-grid">
+				<article class="dh-panel dh-orders">
+					<div class="dh-panel-head"><h3>Recent orders</h3><a class="dh-link" th:href="@{/orders}">View all orders <span aria-hidden="true">&rarr;</span></a></div>
+					<div class="dh-table-wrap"><table class="dh-table"><caption class="visually-hidden">Recent laundry orders</caption><thead><tr><th scope="col">Order</th><th scope="col">Customer</th><th scope="col">Schedule</th><th scope="col">Status</th><th scope="col">Payment</th><th scope="col" class="align-right">Total</th></tr></thead><tbody>
+						<tr class="dh-row" th:each="o : ${recentOrders}"><td><a class="dh-order" th:href="@{/orders/{n}(n=${o.orderNumber})}" th:text="${o.orderNumber}"></a></td><td><strong th:text="${o.customer.name}">Customer</strong><small th:text="${o.customer.phone}">Phone</small></td><td><span th:text="${o.deliveryAt == null ? 'Delivery not set' : #temporals.format(o.deliveryAt.atZone(businessZone), 'dd MMM, hh:mm a')}">Delivery not set</span><small th:text="${o.pickupAt == null ? 'Pickup not set' : 'Pickup ' + #temporals.format(o.pickupAt.atZone(businessZone), 'dd MMM')}">Pickup not set</small></td><td><span class="dh-chip" th:classappend="| status-${#strings.toLowerCase(o.workStatus)}|"><span th:text="${o.workStatus}">RECEIVED</span></span></td><td><span class="dh-chip" th:classappend="| payment-${#strings.toLowerCase(o.paymentStatus)}|"><span th:text="${o.paymentStatus}">UNPAID</span></span></td><td class="align-right"><strong class="dh-total" th:text="|₹${#numbers.formatDecimal(o.total, 0, 0)}|">₹0</strong></td></tr>
+						<tr class="dh-empty-row" th:if="${#lists.isEmpty(recentOrders)}"><td colspan="6"><div class="dh-empty"><span class="dh-empty-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 4h12v16H6zM9 8h6M9 12h6"></path></svg></span><strong>No orders yet</strong><p>Create a customer and book the first laundry order to begin.</p><a class="dh-link" th:href="@{/orders/new}">Create an order <span aria-hidden="true">&rarr;</span></a></div></td></tr>
+					</tbody></table></div>
+				</article>
+
+				<aside class="dh-side">
+					<article class="dh-panel">
+						<div class="dh-panel-head"><h3>Collection health</h3></div>
+						<div class="dh-balance"><span>Outstanding balance</span><strong th:text="|₹${#numbers.formatDecimal(dashboard.outstanding, 0, 0)}|">₹0</strong></div>
+						<div class="dh-stat"><span>Collected today</span><strong th:text="|₹${#numbers.formatDecimal(dashboard.todayCollections, 0, 0)}|">₹0</strong></div>
+						<div class="dh-stat"><span>Due today</span><strong th:text="|${dashboard.deliveryDueToday} deliveries · ${dashboard.pickupDueToday} pickups|">0 deliveries · 0 pickups</strong></div>
+						<div class="dh-stat"><span>Payment QR</span><span class="dh-chip" th:classappend="${upiConfigured} ? ' status-ready' : ' payment-partial'"><span th:text="${upiConfigured ? 'Configured' : 'Not configured'}">Not configured</span></span></div>
+						<div class="dh-panel-foot"><a class="dh-link" th:href="@{/reports/outstanding}">View outstanding <span aria-hidden="true">&rarr;</span></a><a class="dh-link" th:href="@{/orders}">Review orders and payments <span aria-hidden="true">&rarr;</span></a></div>
+					</article>
+					<article class="dh-panel">
+						<div class="dh-panel-head"><h3>WhatsApp delivery</h3><span class="dh-live"><span aria-hidden="true"></span>Live</span></div>
+						<div class="dh-msgs">
+							<div class="dh-msg is-pending"><strong th:text="${whatsapp.pending}">0</strong><span>Pending</span></div>
+							<div class="dh-msg is-failed"><strong th:text="${whatsapp.failed}">0</strong><span>Failed</span></div>
+							<div class="dh-msg is-sent"><strong th:text="${whatsapp.sent}">0</strong><span>Sent</span></div>
+							<div class="dh-msg is-delivered"><strong th:text="${whatsapp.delivered}">0</strong><span>Delivered</span></div>
+						</div>
+					</article>
+				</aside>
+			</section>
+
+			<section class="dh-panel dh-actions" aria-labelledby="dh-actions-title">
+				<div class="dh-panel-head"><h3 id="dh-actions-title">Quick actions</h3></div>
+				<div class="dh-action-grid">
+					<a class="dh-action" th:href="@{/orders/new}"><span class="dh-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg></span><span><strong>New order</strong><small>Book a laundry order</small></span></a>
+					<a class="dh-action" th:href="@{/orders}"><span class="dh-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 3h12v18H6zM9 7h6M9 11h6M9 15h4"></path></svg></span><span><strong>Orders</strong><small>Track and update orders</small></span></a>
+					<a class="dh-action" th:href="@{/customers}"><span class="dh-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"></circle><path d="M3.5 19a5.5 5.5 0 0 1 11 0M16 6.5a3 3 0 0 1 0 5.8M16 15a5 5 0 0 1 4.5 4"></path></svg></span><span><strong>Customers</strong><small>Find and manage customers</small></span></a>
+					<a class="dh-action" th:href="@{/services}"><span class="dh-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4zM8 9h8M8 13h5"></path></svg></span><span><strong>Services &amp; pricing</strong><small>Review the service menu</small></span></a>
+					<a class="dh-action" th:href="@{/reports}"><span class="dh-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19V9M12 19V5M19 19v-7M3 19h18"></path></svg></span><span><strong>Reports</strong><small>Sales and service reports</small></span></a>
+					<a class="dh-action" th:href="@{/reports/outstanding}"><span class="dh-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 6h16v12H4zM4 10h16M8 15h3"></path></svg></span><span><strong>Outstanding</strong><small>Pending balances</small></span></a>
+				</div>
+			</section>
+		</main>
+	</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,290 @@
+const DEFAULT_IMAGE = '/assets/service-images/default-laundry.svg';
+
+const normalize = value => String(value ?? '')
+  .trim()
+  .toLowerCase()
+  .replace(/[^a-z0-9]+/g, ' ')
+  .replace(/\s+/g, ' ')
+  .trim();
+
+const normalizeCode = value => String(value ?? '').trim().toUpperCase();
+
+const WOMEN_SERVICE_CODES = new Set([
+  'BLAZER_DRY_W', 'BLOUSE_DRY_W', 'BRASSIERES_DRY_W', 'CAPRI_DRY_W',
+  'DANGREE_DRY_W', 'DRESS_DRY_W', 'DUPATTA_DRY_W', 'JACKET_DRY_W',
+  'JEANS_DRY_W', 'JUMPER_DRY_W', 'KURTI_KAMEEZ_DRY_W', 'LEGGINGS_DRY_W',
+  'LEHENGA_DRY_W', 'LONGCOAT_DRY_W', 'PANTS_DRY_W', 'PETTICOAT_DRY_W',
+  'PLAZO_DRY_W', 'PULLOVER_DRY_W', 'SALWAR_DRY_W', 'SAREE_DRY_W',
+  'SCARF_DRY_W', 'SHAWL_DRY_W', 'SHIRT_DRY_W', 'SKIRT_LONG_DRY_W',
+  'SKIRT_SHORT_DRY_W', 'SLACKS_DRY_W', 'STOCKINGS_DRY_W', 'STOLE_DRY_W',
+  'SWEATER_DRY_W', 'SWEATSHIRT_DRY_W', 'TOP_DRY_W', 'TRACKPANT_DRY_W',
+  'TSHIRT_DRY_W'
+]);
+
+const SERVICE_CODE_IMAGE = {
+  SHIRT_DRY: 'WHITESHIRT_DRY_M.png',
+  SHIRT_DRY_M: 'SHIRT_DRY_M.png',
+  SHIRT_DRY_W: 'shirt.svg',
+  SHIRT_DRY_K: 'SHIRT_DRY_K.png',
+  BLAZER_DRY: 'BLAZER_DRY_M.png',
+  BLAZER_DRY_M: 'blazer.svg',
+  BLAZER_DRY_W: 'blazer.svg',
+  TSHIRT_DRY_M: 'TSHIRT_DRY_M.png',
+  TSHIRT_DRY_W: 'tshirt.svg',
+  TSHIRT_DRY_K: 'TSHIRT_DRY_K.png',
+  VEST_DRY_M: 'VEST_DRY_M.png',
+  UNDERWEAR_DRY_M: 'UNDERWEAR_DRY_M.png',
+  PULLOVER_DRY_M: 'LONGPULLOVER_DRY_M.png',
+  PULLOVER_DRY_W: 'PULLOVER_DRY_W.png',
+  PULLOVER_DRY_K: 'PULLOVER_DRY_K.png',
+  SWEATPANT_DRY_M: 'SWEATPANTS_DRY_M.png',
+  CAPRI_DRY_M: 'CAPRI_DRY_M.png',
+  CAPRI_DRY_W: 'capri.svg',
+  CAPRI_DRY_K: 'CAPRI_DRY_K.png',
+  PYJAMA_DRY_M: 'PYJAMA_DRY_M.png',
+  PYJAMA_IRON: 'pyjama.svg',
+  TRACKPANT_DRY_M: 'TRACKPANT_DRY_M.png',
+  TRACKPANT_DRY_W: 'track-pant.svg',
+  TRACKPANT_DRY_K: 'TRACKPANT_DRY_K.png',
+  SHORTS_DRY_M: 'SHORTS_DRY_M.png',
+  SHORTS_DRY_K: 'SHORTS_DRY_K.png',
+  LONGCOAT_DRY_M: 'LONGCOAT_DRY_M.png',
+  LONGCOAT_DRY_W: 'long-coat.svg',
+  JEANS_DRY_M: 'JEANS_DRY_M.png',
+  JEANS_DRY_W: 'jeans.svg',
+  JEANS_DRY_K: 'JEANS_DRY_K.png',
+  JACKET_DRY_M: 'JACKET_DRY_M.png',
+  JACKET_DRY_W: 'jacket.svg',
+  JACKET_DRY_K: 'JACKET_DRY_K.png',
+  ACHKAN_DRY_M: 'ACHKAN_DRY_M.png',
+  SAFARI_DRY_M: 'SAFARI_DRY_M.png',
+  DHOTI_DRY_M: 'DHOTI_DRY_M.png',
+  KURTA_DRY_M: 'KURTA_DRY_M.png',
+  KURTA_DRY_K: 'KURTA_DRY_K.png',
+  KURTA_IRON: 'kurta.svg',
+  SUIT_DRY_M: 'SUIT_DRY_M.png',
+  SWEATER_DRY_M: 'SWEATER_DRY_M.png',
+  SWEATER_DRY_W: 'sweater.svg',
+  SWEATER_DRY_K: 'SWEATER_DRY_K.png',
+  SWEATSHIRT_DRY_M: 'SWEATSHIRT_DRY_M.png',
+  SWEATSHIRT_DRY_W: 'sweatshirt.svg',
+  SWEATSHIRT_DRY_K: 'SWEATSHIRT_DRY_K.png',
+  TIE_DRY_M: 'TIE_DRY_M.png',
+  TIE_DRY_A: 'TIE_DRY_A.png',
+  SHERWANI_DRY_M: 'SHERWANI_DRY_M.png',
+  SHERWANI_DRY_K: 'SHERWANI_DRY_K.png',
+  PETTICOAT_DRY_W: 'petticoat.svg',
+  BRASSIERES_DRY_W: 'bra.svg',
+  STOCKINGS_DRY_W: 'stockings.svg',
+  SCARF_DRY_W: 'scarf.svg',
+  SLACKS_DRY_W: 'trousers.svg',
+  LEGGINGS_DRY_W: 'leggings.svg',
+  LEGGINGS_DRY_K: 'LEGGINGS_DRY_K.png',
+  JUMPER_DRY_W: 'sweater.svg',
+  JUMPER_DRY_K: 'JUMPER_DRY_K.png',
+  DANGREE_DRY_W: 'dress.svg',
+  DANGREE_DRY_K: 'DANGREE_DRY_K.png',
+  PANTS_DRY_W: 'trousers.svg',
+  PANTS_DRY_K: 'PANTS_DRY_K.png',
+  TOP_DRY_W: 'blouse.svg',
+  TOP_DRY_K: 'TOP_DRY_K.png',
+  SKIRT_LONG_DRY_W: 'skirt-long.svg',
+  SKIRT_SHORT_DRY_W: 'skirt-short.svg',
+  BLOUSE_DRY_W: 'blouse.svg',
+  BLOUSE_DRY_K: 'BLOUSE_DRY_K.png',
+  BLOUSE_IRON: 'blouse.svg',
+  DUPATTA_DRY_W: 'dupatta.svg',
+  DUPATTA_DRY_K: 'DUPATTA_DRY_K.png',
+  DUPATTA_IRON: 'dupatta.svg',
+  LEHENGA_DRY_W: 'lehenga.svg',
+  LEHENGA_DRY_K: 'LEHENGA_DRY_K.png',
+  DRESS_DRY_W: 'dress.svg',
+  DRESS_DRY_K: 'DRESS_DRY_K.png',
+  SAREE_DRY_W: 'saree.svg',
+  SAREE_IRON: 'saree.svg',
+  SALWAR_DRY_W: 'salwar.svg',
+  SALWAR_DRY_K: 'SALWAR_DRY_K.png',
+  KURTI_KAMEEZ_DRY_W: 'kurti.svg',
+  KURTI_IRON: 'kurti.svg',
+  SHAWL_DRY_W: 'shawl.svg',
+  STOLE_DRY_W: 'stole.svg',
+  FROCK_DRY_K: 'FROCK_DRY_K.png',
+  KIDS_FROCK_IRON: 'frock.svg',
+  BABYBLANKET_DRY_K: 'BABYBLANKET_DRY_K.png',
+  TABLERUNNER_DRY_H: 'TABLERUNNER_DRY_H.png',
+  FOOTMAT_DRY_H: 'FOOTMAT_DRY_H.png',
+  TABLEMAT_DRY_H: 'TABLEMAT_DRY_H.png',
+  BATHROBE_DRY_H: 'BATHROBE_DRY_H.png',
+  SOCKS_DRY_H: 'SOCKS_DRY_H.png',
+  HANDBAG_DRY_H: 'HANDBAG_DRY_H.png',
+  HANDKERCHIEF_DRY_A: 'HANDKERCHIEF_DRY_A.png',
+  HAT_DRY_A: 'HAT_DRY_A.png',
+  CAP_DRY_A: 'CAP_DRY_A.png',
+  MUFFLER_DRY_A: 'MUFFLER_DRY_A.png',
+  RAINCOAT_DRY_A: 'RAINCOAT_DRY_A.png',
+  WASH_IRON_KG: 'washing.svg',
+  WASH_FOLD_KG: 'washing.svg',
+  WASH_FOLD_EXPRESS_KG: 'washing.svg',
+  WASH_IRON_EXPRESS_KG: 'washing.svg',
+  SPORT_SHOE: 'shoe.svg',
+  CANVAS_SHOE: 'shoe.svg',
+  LEATHER_SHOE: 'shoe.svg',
+  SUEDE_SHOE: 'shoe.svg',
+  CROCS_SANDALS: 'shoe.svg',
+  SLIPPERS: 'shoe.svg',
+  SOFA_SEAT: 'sofa.svg',
+  SOFA_CLEANING: 'sofa.svg',
+  BLANKET_DRY_H: 'BLANKET_DRY_H.png',
+  BEDSPREAD_DRY_H: 'BEDSPREAD_DRY_H.png',
+  BEDSHEET_DRY_H: 'BEDSHEET_DRY_H.png',
+  DUVET_DRY_H: 'DUVET_DRY_H.png',
+  QUILT_DRY_H: 'QUILT_DRY_H.png',
+  CURTAIN_DRY_H: 'CURTAIN_DRY_H.png',
+  BLIND_DRY_H: 'BLIND_DRY_H.png',
+  TOWELS_DRY_H: 'TOWELS_DRY_H.png',
+  COVERS_DRY_H: 'COVERS_DRY_H.png',
+  CUSHIONCOVERS_DRY_H: 'CUSHIONCOVERS_DRY_H.png',
+  SOFACOVER_DRY_H: 'SOFACOVER_DRY_H.png',
+  TABLE_NAPKIN_DRY_H: 'bedsheet.svg',
+  TABLENAPKIN_DRY_H: 'TABLENAPKIN_DRY_H.png',
+  SHIRT_IRON: 'shirt.svg',
+  TSHIRT_IRON: 'tshirt.svg',
+  PANT_IRON: 'trousers.svg',
+  LONG_DRESS_IRON: 'dress.svg',
+  PILLOW_COVER_IRON: 'bedsheet.svg',
+  COAT_BLAZER_IRON: 'blazer.svg',
+  OVERCOAT_IRON: 'long-coat.svg',
+  KIDS_IRON: 'dress.svg',
+    SAREE_IRON: 'saree.svg',
+    KURTI_IRON: 'kurti.svg',
+    DUPATTA_IRON: 'dupatta.svg',
+    KIDS_FROCK_IRON: 'frock.svg',
+  COAT_DRY_K: 'COAT_DRY_K.png',
+  SKIRT_DRY_K: 'SKIRT_DRY_K.png',
+  SWIM_DRY_K: 'SWIM_DRY_K.png',
+  GLOVES_DRY_A: 'GLOVES_DRY_A.png',
+  SOFTTOY_DRY_A: 'SOFTTOY_DRY_A.png'
+};
+
+const SERVICE_NAME_IMAGE = {
+  'white shirt': 'shirt.svg',
+  shirt: 'shirt.svg',
+  't shirt': 'tshirt.svg',
+  'tshirt': 'tshirt.svg',
+  vest: 'vest.svg',
+  'under wear': 'underwear.svg',
+  underwear: 'underwear.svg',
+  'long pullover': 'pullover.svg',
+  'sweat pants': 'sweat-pants.svg',
+  capri: 'capri.svg',
+  pyjama: 'pyjama.svg',
+  'track pant': 'track-pant.svg',
+  shorts: 'shorts.svg',
+  'long coat': 'long-coat.svg',
+  jeans: 'jeans.svg',
+  tie: 'tie.svg',
+  'sherwani set': 'sherwani.svg',
+  sherwani: 'sherwani.svg',
+  achkan: 'blazer.svg',
+  'baby blanket': 'blanket.svg',
+  'table runner': 'bedsheet.svg',
+  'foot mat': 'bedsheet.svg',
+  'table mat': 'bedsheet.svg',
+  'bath robe': 'blanket.svg',
+  handbag: 'bag.svg',
+  socks: 'stockings.svg',
+  'rain coat': 'long-coat.svg',
+  shoe: 'shoe.svg',
+  'sports shoe': 'shoe.svg',
+  'canvas shoe': 'shoe.svg',
+  'leather shoe': 'shoe.svg',
+  'suede shoe': 'shoe.svg',
+  slippers: 'shoe.svg',
+  sofa: 'sofa.svg',
+  'sofa cover': 'sofa.svg',
+  curtain: 'curtain.svg',
+  bedsheet: 'bedsheet.svg',
+  'bed sheet': 'bedsheet.svg',
+  duvet: 'bedsheet.svg',
+  quilt: 'blanket.svg',
+  dress: 'dress.svg',
+  saree: 'saree.svg',
+  pant: 'trousers.svg',
+  trouser: 'trousers.svg',
+  trousers: 'trousers.svg',
+  blazer: 'blazer.svg',
+  'blazer coat': 'blazer.svg',
+  coat: 'blazer.svg',
+  jacket: 'jacket.svg',
+  dhoti: 'dhoti.svg',
+  suit: 'suit.svg',
+  sweater: 'sweater.svg',
+  'sweat shirt': 'sweatshirt.svg',
+  safari: 'safari.svg',
+  blanket: 'blanket.svg',
+  blouse: 'blouse.svg',
+  dupatta: 'dupatta.svg',
+  lehenga: 'lehenga.svg',
+  kurti: 'kurti.svg',
+  'kurti kameez': 'kurti.svg',
+  salwar: 'salwar.svg',
+  shawl: 'shawl.svg',
+  stole: 'stole.svg',
+  leggings: 'leggings.svg',
+  petticoat: 'petticoat.svg',
+  stockings: 'stockings.svg',
+  'skirt long': 'skirt-long.svg',
+  'skirt short': 'skirt-short.svg',
+  'frock': 'frock.svg',
+  'scarf': 'scarf.svg',
+  'hat': 'hat.svg',
+  'cap': 'cap.svg',
+  'long coat': 'long-coat.svg',
+  'kurta': 'kurta.svg',
+  'jumper': 'sweater.svg',
+  'suit': 'suit.svg',
+  'safari': 'safari.svg',
+  'dupatta': 'dupatta.svg',
+  'top': 'blouse.svg',
+  'blouse': 'blouse.svg',
+  'bra': 'bra.svg'
+};
+
+const CATEGORY_IMAGE = {
+  'dry clean': 'shirt.svg',
+  'laundry by kg': 'washing.svg',
+  ironing: 'iron.svg',
+  'shoe cleaning': 'shoe.svg',
+  'sofa cleaning': 'sofa.svg'
+};
+
+function resolveServiceImage(code, category, name) {
+  const normalizedCode = normalizeCode(code);
+  const normalizedCategory = normalize(category);
+  const normalizedName = normalize(name);
+
+  if (WOMEN_SERVICE_CODES.has(normalizedCode)) {
+    return `/assets/service-images/${normalizedCode}.png`;
+  }
+
+  const codeImage = SERVICE_CODE_IMAGE[normalizedCode];
+  if (!normalizedCode.endsWith('_W') && codeImage) return `/assets/service-images/${codeImage}`;
+
+  if (!normalizedCode.endsWith('_W') && normalizedName && SERVICE_NAME_IMAGE[normalizedName]) {
+    return `/assets/service-images/${SERVICE_NAME_IMAGE[normalizedName]}`;
+  }
+
+  if (normalizedCategory && CATEGORY_IMAGE[normalizedCategory]) {
+    return `/assets/service-images/${CATEGORY_IMAGE[normalizedCategory]}`;
+  }
+
+  return DEFAULT_IMAGE;
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { resolveServiceImage, DEFAULT_IMAGE };
+}
+
+if (typeof window !== 'undefined') {
+  window.resolveServiceImage = resolveServiceImage;
+}

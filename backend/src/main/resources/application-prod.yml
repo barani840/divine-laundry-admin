@@ -1,0 +1,75 @@
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  flyway:
+    enabled: true
+    url: ${FLYWAY_DB_URL}
+    user: ${FLYWAY_DB_USERNAME}
+    password: ${FLYWAY_DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        type:
+          preferred_instant_jdbc_type: TIMESTAMP
+        jdbc:
+          time_zone: UTC
+
+server:
+  port: ${SERVER_PORT:8080}
+  error:
+    include-message: never
+  forward-headers-strategy: framework
+  servlet:
+    session:
+      timeout: 30m
+      cookie:
+        http-only: true
+        same-site: lax
+        secure: true
+
+app:
+  base-url: ${APP_BASE_URL:https://YOUR_DOMAIN}
+  business-zone: ${BUSINESS_ZONE:Asia/Kolkata}
+  business:
+    name: ${BUSINESS_NAME:Divine Laundry Trichy}
+    phone: ${BUSINESS_PHONE:}
+    address: ${BUSINESS_ADDRESS:}
+    gst-number: ${BUSINESS_GST_NUMBER:}
+  payment:
+    upi-id: ${UPI_ID:}
+    upi-payee-name: ${UPI_PAYEE_NAME:Divine Laundry Trichy}
+  whatsapp:
+    enabled: ${WHATSAPP_ENABLED:false}
+    app-secret: ${WHATSAPP_APP_SECRET:}
+    webhook-verify-token: ${WHATSAPP_WEBHOOK_VERIFY_TOKEN:}
+    graph-base-url: ${WHATSAPP_GRAPH_BASE_URL:https://graph.facebook.com}
+    graph-api-version: ${WHATSAPP_GRAPH_API_VERSION:}
+    phone-number-id: ${WHATSAPP_PHONE_NUMBER_ID:}
+    access-token: ${WHATSAPP_ACCESS_TOKEN:}
+    template-name: ${WHATSAPP_TEMPLATE_NAME:laundry_invoice_payment}
+    template-language: ${WHATSAPP_TEMPLATE_LANGUAGE:en}
+    document-template-name: ${WHATSAPP_DOCUMENT_TEMPLATE_NAME:}
+    document-template-language: ${WHATSAPP_DOCUMENT_TEMPLATE_LANGUAGE:en}
+    payment-template-name: ${WHATSAPP_PAYMENT_TEMPLATE_NAME:}
+    payment-template-language: ${WHATSAPP_PAYMENT_TEMPLATE_LANGUAGE:}
+    payment-template-body-parameter-order: ${WHATSAPP_PAYMENT_TEMPLATE_BODY_PARAMETER_ORDER:}
+    payment-template-url-button-index: ${WHATSAPP_PAYMENT_TEMPLATE_URL_BUTTON_INDEX:}
+    payment-template-url-prefix: ${WHATSAPP_PAYMENT_TEMPLATE_URL_PREFIX:}
+    payment-template-category: ${WHATSAPP_PAYMENT_TEMPLATE_CATEGORY:}
+    pending-timeout: ${WHATSAPP_PENDING_TIMEOUT:PT15M}
+  admin:
+    username: ${ADMIN_USERNAME}
+    password: ${ADMIN_PASSWORD}
+  web-origin: ${WEB_ORIGIN:https://localhost}
+
+razorpay:
+  enabled: ${RAZORPAY_ENABLED:false}
+  base-url: ${RAZORPAY_BASE_URL:https://api.razorpay.com}
+  key-id: ${RAZORPAY_KEY_ID:}
+  key-secret: ${RAZORPAY_KEY_SECRET:}
+  webhook-secret: ${RAZORPAY_WEBHOOK_SECRET:}

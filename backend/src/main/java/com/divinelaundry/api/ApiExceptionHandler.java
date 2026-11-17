@@ -1,0 +1,48 @@
+package com.divinelaundry.api;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.*;
+import java.time.Instant;
+import com.divinelaundry.service.PaymentReceiptService;
+
+@RestControllerAdvice(basePackages = "com.divinelaundry.api")
+public class ApiExceptionHandler {
+    @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    ErrorResponse badRequest(RuntimeException ex) {
+        return new ErrorResponse(Instant.now(), safeMessage(ex.getMessage()));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    ErrorResponse validation(MethodArgumentNotValidException ex) {
+        String message = ex.getBindingResult().getFieldErrors().stream()
+                .findFirst().map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .orElse("Invalid request");
+        return new ErrorResponse(Instant.now(), message);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    ErrorResponse conflict(DataIntegrityViolationException ex) {
+        return new ErrorResponse(Instant.now(), "This request was already saved or conflicts with an existing record. Refresh before retrying.");
+    }
+
+    @ExceptionHandler(PaymentReceiptService.PaymentReceiptNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    ErrorResponse receiptNotFound() {
+        return new ErrorResponse(Instant.now(), "Payment receipt not found");
+    }
+
+    public record ErrorResponse(Instant timestamp, String message) {}
+
+    private static String safeMessage(String message) {
+        if (message == null || message.isBlank()
+                || message.matches("(?i).*\\b(sql|table|column|constraint|jdbc|hibernate|database)\\b.*")) {
+            return "The request could not be processed";
+        }
+        return message;
+    }
+}

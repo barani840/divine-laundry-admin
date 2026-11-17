@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"><head th:replace="~{fragments :: head('Sign in')}"></head>
+<body class="login-page">
+<main class="login-shell">
+	<section class="login-panel" aria-labelledby="login-title">
+		<div class="login-card">
+			<div class="login-brand">
+				<span class="logo" aria-hidden="true">D</span>
+				<span><strong>Divine Laundry</strong><small>Admin portal</small></span>
+			</div>
+
+			<div class="login-heading">
+				<h1 id="login-title">Welcome back</h1>
+				<p>Sign in to manage orders, customers and garments.</p>
+			</div>
+
+			<div class="alert error login-alert" th:if="${param.error}" role="alert">
+				<span class="alert-icon" aria-hidden="true">!</span><span>Incorrect username or password.</span>
+			</div>
+			<div class="alert login-alert login-alert-success" th:if="${param.logout}" role="status">
+				<span class="alert-icon" aria-hidden="true">&#10003;</span><span>You have signed out.</span>
+			</div>
+
+			<form class="login-form" th:action="@{/login}" method="post" data-login-form>
+				<label for="username">Username</label>
+				<div class="input-wrap">
+					<span class="input-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="8" r="4"></circle><path d="M4 20c0-4 3.6-6 8-6s8 2 8 6"></path></svg></span>
+					<input id="username" name="username" autocomplete="username" required autofocus aria-describedby="username-hint">
+				</div>
+				<small id="username-hint" class="field-hint">Use your administrator username.</small>
+
+				<div class="field-row">
+					<label for="password">Password</label>
+					<!-- UI only: no password-reset route exists yet.
+					     When one is added, replace this button with:
+					     <a class="login-text-action" th:href="@{/forgot-password}">Forgot password?</a> -->
+					<button class="login-text-action" type="button" disabled aria-disabled="true" title="Password reset is not available yet">
+						Forgot password? <span class="soon-badge">Coming soon</span>
+					</button>
+				</div>
+				<div class="input-wrap password-field">
+					<span class="input-icon input-lock" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg></span>
+					<input id="password" name="password" type="password" autocomplete="current-password" required>
+					<button class="password-toggle" type="button" data-password-toggle aria-controls="password" aria-label="Show password" title="Show password">
+						<svg class="password-toggle-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6Z"></path><circle cx="12" cy="12" r="2.5"></circle></svg>
+					</button>
+				</div>
+
+				<button class="login-submit" type="submit" data-login-submit>
+					<span data-submit-label>Sign in</span><span class="submit-arrow" aria-hidden="true">&#8594;</span>
+				</button>
+			</form>
+
+			<div class="login-divider"><span>Need access?</span></div>
+			<!-- UI only: no registration route exists yet.
+			     When one is added, replace this button with:
+			     <a class="login-secondary" th:href="@{/admin/users/new}">...same inner markup...</a> -->
+			<button class="login-secondary" type="button" disabled aria-disabled="true" title="Admin registration is not available yet">
+				<svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><circle cx="10" cy="8" r="4"></circle><path d="M2 20c0-4 3.4-6 8-6M18 9v6M15 12h6"></path></svg>
+				<span>Create new admin user</span>
+				<span class="soon-badge">Coming soon</span>
+			</button>
+
+			<p class="login-footnote"><svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><path d="M7 10V8a5 5 0 0 1 10 0v2M6 10h12v10H6z"></path></svg> Secure admin access</p>
+		</div>
+		<p class="login-legal">&copy; Divine Laundry &middot; Authorised staff only</p>
+	</section>
+</main>
+
+</body></html>
